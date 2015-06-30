@@ -25,7 +25,7 @@ SynthDef( "voiceSwell", {
 	//sig2 = FreeVerb2.ar(sig2[0], sig2[1], mix:0.4); // HOW TO MAKE THIS UNIVERSAL?
 	env = EnvGen.kr(Env.perc(attackTime:notedur, releaseTime:0.01, level:1, curve:4), doneAction:2);
 	sig2 = sig2 * env;
-	Out.ar(0, sig2);
+	Out.ar(~masterBus, sig2);
 }).add;
 
 SynthDef( "noise", {

@@ -36,28 +36,35 @@ l = (
 p = Pbind(\instrument, "blip", \dur, 1/4, \note, Pseq([0,5,7,12], 4));
 ~add.value(\yo, p);
 
-~lick.value(\highPop, instrument:"pop", dur:1/4, amp:0.6, ampMul:1, number:8, note:36, freqMul:1, repeats:inf);
+~lick.value(\start2, instrument:"pop", dur:1/4, amp:0.6, ampMul:1, number:8, note:36, freqMul:1, repeats:inf);
 ~lick.value(\highPop, instrument:"blip", dur:1/8, amp:0.2, ampMul:0.9, number:8, note:48, freqMul:1, repeats:inf);
 
 ~lick.value(\start1, instrument:"pop", dur:1/4, amp:0.8, ampMul:0.8, number:8, note:12, freqMul:15/16, repeats:inf);
-~lick.value(\start1, instrument:"pop", dur:1/8, amp:0.04, ampMul:1.5, number:8, note:12, freqMul:16/15, repeats:inf);
-~lick.value(\start1, instrument:"blip",note:-12, freqMul:2, repeats:inf); // up in octaves
-~lick.value(\start1, instrument:"blip", dur:3/4, note:2, ampMul:0.9, freqMul:3/2, number:8, repeats:inf); // up in "fifths"
+~lick.value(\start3, instrument:"pop", dur:1/8, amp:0.04, ampMul:1.5, number:8, note:12, freqMul:16/15, repeats:inf);
+~lick.value(\start2, instrument:"blip",note:-12, freqMul:2, repeats:inf); // up in octaves
+~lick.value(\start4, instrument:"blip", dur:, note:2, ampMul:0.9, freqMul:5/4, number:24, repeats:inf); // up in "fifths"
 ~lick.value(\start1, instrument:"sin",note:0, amp:0.4, ampMul:1/2, freqMul:2, repeats:inf);
 
 ~bind.value(\bass, l.randomBass);
 ~bind.value(\start2, l.randomSin);
-~bind.value(\start1, l.phrase1);
+~bind.value(\start2, l.phrase1);
 
 ~mono.value(\start1, "noise", l.randomNoise);
 
 ~clear.value(\highPop);
 
-~sched.value(\bass, delayTime:8); // MAIN SCHEDULING HERE....
+~sched.value(\start4, delayTime:2); // MAIN SCHEDULING HERE....
 ~sched.value(\bass, delayTime:4, afterSymbol:\start1); // THIS ONE DOES NOT WORK....
 
-~stop.value(\start1, atSymbol:\highPop);
+~stop.value(\start0, atSymbol:\start1);
 ~stop.value(\highPop);
+
+
+~stop.value(\start1)
+
+~lick.value(\start0, instrument:"pop", dur:1/4, amp:0.8, ampMul:0.8, number:5, note:12, freqMul:16/14, repeats:inf);
+
+~sched.value(\start3, 16);
 
 ~stopAll.value; // stops all pattern players
 
