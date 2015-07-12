@@ -14,7 +14,8 @@ MIDIdef.noteOn(\test, { arg vel, midinote;
 	[vel, midinote].postln;
 	Pbind(
 		\midinote, Pseq([midinote]),
-		\amp, vel.linexp(0, 127, 0.000001, 0.8),
+		\amp, vel.linlin(0, 44, 0.000001, 0.8),
+		\legato, 0.2,
 	).play;
 	}
 );
@@ -22,33 +23,36 @@ MIDIdef.noteOn(\test, { arg vel, midinote;
 
 // playing multiple MIDI notes at once
 (
-SynthDef("midiSynth", { arg freq=440, amp=0.1, gate=gate;
+SynthDef("midiSynth", { arg freq=440, amp=0.1, gate=1;
 	var sig, env;
-	sig = Pulse.ar(freq:freq, mul:amp);
-	env = EnvGen.kr(Env.adsr, gate:gate, doneAction:2);
+	sig = Saw.ar(freq:freq, mul:amp);
+	sig = RLPF.ar(sig, LFNoise2.kr(9).range(freq, 9900), 0.2);
+	env = EnvGen.kr(Env.adsr(0.001, 0.1, 0.4, 2), gate:gate, doneAction:2);
 	sig = sig * env;
-	Out.ar(0, sig!2);
+	Out.ar(~masterBus, sig!2);
 }).add;
 )
 
 x = Synth("midiSynth");
+x.set(\gate, 1);
 x.set(\gate, 0);
 x.release;
 
 // A way to keep track of synths for midi notes as they are played
 // there are quarks to do this for you... but doesn't seem to be a built-in library for this.\:
-
-~noteArray = Array.newClear(128);
 (
-MIDIdef.noteOn(\noteOn {arg vel, midinote;
+~noteArray = Array.newClear(128);
+
+MIDIdef.noteOn(\noteOn, {arg vel, midinote;
 	~noteArray[midinote] = Synth("midiSynth", [
-		\freq, midinote.cps;
-		\amp, vel.linexp(0, 127, 0.000001, 0.8)
+		\freq, (midinote + rand(0.2) - 0.1).midicps,
+		\amp, vel.linexp(0, 127, 0.01, 0.69)
 	]);
 	}
 );
 
-MIDIdef.noteOff(\noteOff {arg vel, midinote;
+MIDIdef.noteOff(\noteOff, {arg vel, midinote;
+	midinote.postln;
 	~noteArray[midinote].release; // same as ~noteArray[midinote].set(\gate, 0);
 });
 )
