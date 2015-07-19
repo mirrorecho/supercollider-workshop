@@ -3,6 +3,7 @@
 
 b = Buffer.read(s, "/System/Library/Sounds/Purr.aiff");
 
+
 b.play;
 b.numChannels;
 b.numFrames; // # of (frames of) samples
@@ -19,6 +20,7 @@ Buffer.freeAll;
 		bufnum:b,
 		rate:LFNoise2.ar(0.5).range(0.5, 2), // negative rate is backwards!
 		loop:1,
+		doneAction:2
 )* LFPulse.kr(MouseX.kr(1,10), width:0.2).range(0,1);
 }.play; // done action is important!
 )
